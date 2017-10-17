@@ -98,38 +98,37 @@
             </div>
             <div class="col-md-4 form-group">
                 <input type="text" class="form-control" id="wkt">
-                <button type="button" class="btn btn-primary" onclick="update_map()">Primary</button>
             </div>
         </div>
         <script type="text/javascript">
+
             var raster_osm = new ol.layer.Tile({
                 source: new ol.source.OSM()
             });
-
             var wkt_source = new ol.source.Vector({});
-
             var vector_wkt = new ol.layer.Vector({
                 source: wkt_source
             });
+            var draw = new ol.interaction.Draw({
+                source: wkt_source,
+                type: "Point"
+            });
 
-            function update_map(){
-                var wkt = $("#wkt").val();
-                wkt = 'POLYGON((5.5056965307234 49.865590486789, 5.4375457763672 ' +
-                      '51.113891601563, 3.0337652328166 50.971069335938, 5.5056965307234 ' +
-                      '49.865590486789))';
-
-                var wktFormat = new ol.format.WKT();
-                var wktFeature = wktFormat.readFeature(wkt, {
-                    dataProjection: 'EPSG:4326',
-                    featureProjection: 'EPSG:3857'
-                });
-
-                wkt_source.clear();
-                wkt_source.addFeature(wktFeature);
-            }
+            var style = new ol.style.Style({
+                image: new ol.style.Circle({
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0,0,255,0.4)'
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#c61b1b',
+                        width: 1.25
+                    }),
+                    radius: 5
+                })
+            });
 
             $(function() {
-                var map = new ol.Map({
+                var myMap = new ol.Map({
                     target: 'map',
                     layers: [
                         raster_osm,
@@ -140,6 +139,31 @@
                         zoom: 8
                     })
                 });
+                myMap.addInteraction(draw);
+
+                function onClick(evt) {
+                    wkt_source.clear();
+
+                    var coord = myMap.getCoordinateFromPixel(evt.coordinate);
+
+
+                    var wktFormat = new ol.format.WKT();
+                    //var myWkt = wktFormat.writeFeature(coord);
+
+                    var myPoint = new ol.geom.Point(coord);
+                    var myFeature = new ol.Feature({
+                        name: "point",
+                        geometry: myPoint
+                    });
+                    var wkt = wktFormat.writeGeometry(myPoint)
+                    myFeature.setStyle(style);
+
+                    $("#wkt").val(wkt);
+                    wkt_source.addFeature(myFeature);
+                }
+
+                myMap.on('click', onClick);
+
             });
 
         </script>
