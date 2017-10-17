@@ -109,22 +109,18 @@
             var vector_wkt = new ol.layer.Vector({
                 source: wkt_source
             });
-            var draw = new ol.interaction.Draw({
-                source: wkt_source,
-                type: "Point"
-            });
-
             var style = new ol.style.Style({
                 image: new ol.style.Circle({
-                    fill: new ol.style.Fill({
-                        color: 'rgba(0,0,255,0.4)'
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: '#c61b1b',
-                        width: 1.25
-                    }),
-                    radius: 5
+                    radius: 5,
+                    snapToPixel: false,
+                    fill: new ol.style.Fill({color: 'yellow'}),
+                    stroke: new ol.style.Stroke({color: 'red', width: 1})
                 })
+            });
+            var draw = new ol.interaction.Draw({
+                source: wkt_source,
+                type: "Point",
+                style:style
             });
 
             $(function() {
@@ -142,27 +138,17 @@
                 myMap.addInteraction(draw);
 
                 function onClick(evt) {
-                    wkt_source.clear();
-
-                    var coord = myMap.getCoordinateFromPixel(evt.coordinate);
-
-
                     var wktFormat = new ol.format.WKT();
-                    //var myWkt = wktFormat.writeFeature(coord);
-
-                    var myPoint = new ol.geom.Point(coord);
-                    var myFeature = new ol.Feature({
-                        name: "point",
-                        geometry: myPoint
-                    });
-                    var wkt = wktFormat.writeGeometry(myPoint)
-                    myFeature.setStyle(style);
+                    var myPoint = evt.feature.getGeometry();
+                    var wkt = wktFormat.writeGeometry(myPoint);
+                    evt.feature.setStyle(style);
 
                     $("#wkt").val(wkt);
-                    wkt_source.addFeature(myFeature);
+                    wkt_source.clear();
+
                 }
 
-                myMap.on('click', onClick);
+                draw.on('drawend', onClick);
 
             });
 
