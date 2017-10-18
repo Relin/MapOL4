@@ -105,24 +105,26 @@
             var raster_osm = new ol.layer.Tile({
                 source: new ol.source.OSM()
             });
-
             var wkt_source = new ol.source.Vector({});
-
             var vector_wkt = new ol.layer.Vector({
                 source: wkt_source
+            });
+            var style = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    snapToPixel: false,
+                    fill: new ol.style.Fill({color: 'yellow'}),
+                    stroke: new ol.style.Stroke({color: 'red', width: 1})
+                })
             });
 
             function update_map(){
                 var wkt = $("#wkt").val();
-                wkt = 'POLYGON((5.5056965307234 49.865590486789, 5.4375457763672 ' +
-                      '51.113891601563, 3.0337652328166 50.971069335938, 5.5056965307234 ' +
-                      '49.865590486789))';
+                //wkt = 'POINT(488109.87662284996 6596528.125575768)';
 
                 var wktFormat = new ol.format.WKT();
-                var wktFeature = wktFormat.readFeature(wkt, {
-                    dataProjection: 'EPSG:4326',
-                    featureProjection: 'EPSG:3857'
-                });
+                var wktFeature = wktFormat.readFeature(wkt);
+                wktFeature.setStyle(style);
 
                 wkt_source.clear();
                 wkt_source.addFeature(wktFeature);
