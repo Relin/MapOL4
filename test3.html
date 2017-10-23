@@ -194,14 +194,14 @@
                                         var y = parseFloat(this.getAttribute('y'));
                                         view.animate({
                                             center: [x,y],
-                                            zoom:12
+                                            zoom:8
                                         });
                                     }else if(this.getAttribute('xmax')){
                                         var x = parseFloat(this.getAttribute('xmin'))+((parseFloat(this.getAttribute('xmax'))-parseFloat(this.getAttribute('xmin')))/2);
                                         var y = parseFloat(this.getAttribute('ymin'))+((parseFloat(this.getAttribute('ymax'))-parseFloat(this.getAttribute('ymin')))/2);
                                         view.animate({
                                             center: [x,y],
-                                            zoom:8
+                                            zoom:5
                                         });
                                     }
                                 });
