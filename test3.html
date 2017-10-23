@@ -63,6 +63,7 @@
         <script src="js/tether.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/ol-debug.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
         <script type="text/javascript">
             /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
             function openNav() {
@@ -104,19 +105,23 @@
             </div>
         </div>
         <script type="text/javascript">
-            var belgiumProjection = new ol.proj.Projection({
+            proj4.defs("EPSG:31370","+proj=lcc +lat_1=51.16666723333333 +lat_2=49.8333339 +lat_0=90 +lon_0=4.367486666666666 +x_0=150000.013 +y_0=5400088.438 +ellps=intl +towgs84=-106.869,52.2978,-103.724,0.3366,-0.457,1.8422,-1.2747 +units=m +no_defs");
+            var belgiumProjection = ol.proj.get('EPSG:31370');
+            belgiumProjection.setExtent([17736.0314, 23697.0977, 297289.9391, 245375.4223]);
+            /*var belgiumProjection = new ol.proj.Projection({
                 code: 'EPSG:31370',
                 extent: [17736.0314, 23697.0977, 297289.9391, 245375.4223],
                 units: 'm'
             });
             ol.proj.addProjection(belgiumProjection);
+            */
             var url_spw_geolocalisation="http://geoservices.wallonie.be/geolocalisation/rest/searchAll/";
             var map = {};
             var raster_osm = new ol.layer.Tile({
                 source: new ol.source.OSM()
             });
             var wkt_source = new ol.source.Vector({
-                projection: 'EPSG:31370',
+                projection: belgiumProjection,
             });
             var vector_wkt = new ol.layer.Vector({
                 source: wkt_source
