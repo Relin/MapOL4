@@ -63,6 +63,7 @@
         <script src="js/tether.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/ol-debug.js"></script>
+        <script src="http://geoservices.wallonie.be/geolocalisation/js/SpwGeolocalisationApi.js"></script>
         <script type="text/javascript">
             /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
             function openNav() {
@@ -104,13 +105,13 @@
             </div>
         </div>
         <script type="text/javascript">
+            SpwGeolocalisationApi()
             var belgiumProjection = new ol.proj.Projection({
                 code: 'EPSG:31370',
                 extent: [17736.0314, 23697.0977, 297289.9391, 245375.4223],
                 units: 'm'
             });
             ol.proj.addProjection(belgiumProjection);
-            var url_spw_geolocalisation="http://geoservices.wallonie.be/geolocalisation/rest/searchAll/";
             var map = {};
             var raster_osm = new ol.layer.Tile({
                 source: new ol.source.OSM()
@@ -130,9 +131,10 @@
                 })
             });
             var view = new ol.View({
-                projection: belgiumProjection,
-                center: ol.proj.fromLonLat([168378.865657, 130247.210877]),
+                //projection: belgiumProjection,
+                //center: ol.proj.fromLonLat([168378.865657, 130247.210877]),
                 //center: ol.proj.transform([4.686133, 50.564602], 'EPSG:4326', 'EPSG:31370'),
+                center: ol.proj.fromLonLat([4.686133, 50.564602]),
                 zoom: 8
             });
 
@@ -143,7 +145,7 @@
                     var key = e.which;
                     if(key == 13){
                         var search = $("#adresse_search").val();
-                        $.get(url_spw_geolocalisation + encodeURIComponent(search), function(data) {
+                        searchAll(search, function(data) {
                             if(data.errorCode==0){
                                 var content = "<table class='table table-bordered table-sm table-responsive'><tbody>";
                                 var pos = rue = loc = com = true;
@@ -196,11 +198,10 @@
                             }else{
                                 $("#adresse_search_result").html(data.errorMsg);
                             }
-                        }).fail(function() {
+                        },function() {
                             $("#adresse_search_result").html("Erreur de connexion");
-                        }).always(function() {
-                            $("#adresse_search_result").show();
                         });
+                        $("#adresse_search_result").show();
                     }
                 });
 
