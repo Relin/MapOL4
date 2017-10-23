@@ -58,6 +58,9 @@
                 .sidenav {padding-top: 15px;}
                 .sidenav a {font-size: 18px;}
             }
+            .adresse_tab {
+                cursor: pointer;
+            }
         </style>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/tether.min.js"></script>
@@ -126,25 +129,19 @@
             var vector_wkt = new ol.layer.Vector({
                 source: wkt_source
             });
-            var style = new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 5,
-                    snapToPixel: false,
-                    fill: new ol.style.Fill({color: 'yellow'}),
-                    stroke: new ol.style.Stroke({color: 'red', width: 1})
-                })
-            });
             var view = new ol.View({
                 projection: belgiumProjection,
                 center: ol.proj.fromLonLat([168378.865657, 130247.210877]),
                 //center: ol.proj.transform([4.686133, 50.564602], 'EPSG:4326', 'EPSG:31370'),
-                zoom: 8
+                extent: belgiumProjection.getExtent() || undefined,
+                zoom: 1
             });
 
             $(function() {
 
                 $( "#adresse_search" ).keypress(function (e) {
                     $("#adresse_search_result").hide();
+                    $("#adresse_search_result").empty();
                     var key = e.which;
                     if(key == 13){
                         var search = $("#adresse_search").val();
@@ -152,30 +149,40 @@
                             if(data.errorCode==0){
                                 var content = "<table class='table table-bordered table-sm table-responsive'><tbody>";
                                 var pos = rue = loc = com = true;
+                                var max_i=3;
+                                var i=0
                                 for (var val in data.resultats) {
                                     if(data.resultats[val].type=="POSITION" && pos){
+                                        i=max_i;
                                         pos=false;
                                         content += '<tr class="table-active"><th>ADRESSE</th></tr>';
                                         content += '<tr><td class="adresse_tab" x="'+data.resultats[val].x+'" y="'+data.resultats[val].y+'">'+data.resultats[val].adresse+'</td></tr>';
-                                    }else if (data.resultats[val].type=="POSITION") {
+                                    }else if (data.resultats[val].type=="POSITION" && i) {
+                                        i--;
                                         content += '<tr><td class="adresse_tab" x="'+data.resultats[val].x+'" y="'+data.resultats[val].y+'">'+data.resultats[val].adresse+'</td></tr>';
                                     }else if (data.resultats[val].type=="RUE" && rue) {
+                                        i=max_i;
                                         rue=false;
                                         content += '<tr class="table-active"><th>ROUTE</th></tr>';
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].commune+')</td></tr>';
-                                    }else if (data.resultats[val].type=="RUE") {
+                                    }else if (data.resultats[val].type=="RUE" && i) {
+                                        i--;
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].commune+')</td></tr>';
                                     }else if (data.resultats[val].type=="LOCALITE" && loc) {
+                                        i=max_i;
                                         loc=false;
                                         content += '<tr class="table-active"><th>LOCALITÉ</th></tr>';
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].cps.toString()+')</td></tr>';
-                                    }else if (data.resultats[val].type=="LOCALITE") {
+                                    }else if (data.resultats[val].type=="LOCALITE" && i) {
+                                        i--;
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].cps.toString()+')</td></tr>';
                                     }else if (data.resultats[val].type=="COMMUNE" && com) {
+                                        i=max_i;
                                         com=false;
                                         content += '<tr class="table-active"><th>COMMUNE</th></tr>';
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].cps.toString()+')</td></tr>';
-                                    }else if (data.resultats[val].type=="COMMUNE") {
+                                    }else if (data.resultats[val].type=="COMMUNE" && i) {
+                                        i--;
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].cps.toString()+')</td></tr>';
                                     }
                                 }
@@ -187,7 +194,7 @@
                                         var y = parseFloat(this.getAttribute('y'));
                                         view.animate({
                                             center: [x,y],
-                                            zoom:17
+                                            zoom:12
                                         });
                                     }else if(this.getAttribute('xmax')){
                                         var x = parseFloat(this.getAttribute('xmin'))+((parseFloat(this.getAttribute('xmax'))-parseFloat(this.getAttribute('xmin')))/2);
@@ -209,25 +216,6 @@
                     }
                 });
 
-                function update_map(){
-                    var wkt = $("#wkt").val();
-                    //wkt = 'POINT(488109.87662284996 6596528.125575768)';
-                    if(wkt){
-                        var wktFormat = new ol.format.WKT();
-                        var wktFeature = wktFormat.readFeature(wkt);
-                        var geom = wktFormat.readGeometry(wkt);
-                        wktFeature.setStyle(style);
-
-                        wkt_source.clear();
-                        wkt_source.addFeature(wktFeature);
-
-                        view.animate({
-                            center: geom.getCoordinates(),
-                            zoom:8
-                        });
-                    }
-                }
-
                 map = new ol.Map({
                     target: 'map',
                     layers: [
@@ -235,6 +223,10 @@
                         vector_wkt
                     ],
                     view: view
+                });
+                view.animate({
+                    center: [168378.865657, 130247.210877],
+                    zoom:1
                 });
 
             });
