@@ -140,10 +140,10 @@
             $(function() {
 
                 $( "#adresse_search" ).keypress(function (e) {
-                    $("#adresse_search_result").hide();
-                    $("#adresse_search_result").empty();
                     var key = e.which;
                     if(key == 13){
+                        $("#adresse_search_result").hide();
+                        $("#adresse_search_result").empty();
                         var search = $("#adresse_search").val();
                         $.get(url_spw_geolocalisation + encodeURIComponent(search), function(data) {
                             if(data.errorCode==0){
