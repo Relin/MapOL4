@@ -164,13 +164,13 @@
                                         pos=false;
                                         content += '<tr class="table-active"><th>ADRESSE</th></tr>';
                                         content += '<tr><td class="adresse_tab" x="'+data.resultats[val].x+'" y="'+data.resultats[val].y+'">'+data.resultats[val].adresse+'</td></tr>';
-                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="POSITION"){
+                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="POSITION" && i){
                                             content += '<tr><td class="itemSeparator"></td></tr>';
                                         }
                                     }else if (data.resultats[val].type=="POSITION" && i) {
                                         i--;
                                         content += '<tr><td class="adresse_tab" x="'+data.resultats[val].x+'" y="'+data.resultats[val].y+'">'+data.resultats[val].adresse+'</td></tr>';
-                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="POSITION"){
+                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="POSITION" && i){
                                             content += '<tr><td class="itemSeparator"></td></tr>';
                                         }
                                     }else if (data.resultats[val].type=="RUE" && rue) {
@@ -178,13 +178,13 @@
                                         rue=false;
                                         content += '<tr class="table-active"><th>ROUTE</th></tr>';
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].commune+')</td></tr>';
-                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="RUE"){
+                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="RUE" && i){
                                             content += '<tr><td class="itemSeparator"></td></tr>';
                                         }
                                     }else if (data.resultats[val].type=="RUE" && i) {
                                         i--;
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].commune+')</td></tr>';
-                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="RUE"){
+                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="RUE" && i){
                                             content += '<tr><td class="itemSeparator"></td></tr>';
                                         }
                                     }else if (data.resultats[val].type=="LOCALITE" && loc) {
@@ -192,13 +192,13 @@
                                         loc=false;
                                         content += '<tr class="table-active"><th>LOCALITÉ</th></tr>';
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].cps.toString()+')</td></tr>';
-                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="LOCALITE"){
+                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="LOCALITE" && i){
                                             content += '<tr><td class="itemSeparator"></td></tr>';
                                         }
                                     }else if (data.resultats[val].type=="LOCALITE" && i) {
                                         i--;
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].cps.toString()+')</td></tr>';
-                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="LOCALITE"){
+                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="LOCALITE" && i){
                                             content += '<tr><td class="itemSeparator"></td></tr>';
                                         }
                                     }else if (data.resultats[val].type=="COMMUNE" && com) {
@@ -206,19 +206,18 @@
                                         com=false;
                                         content += '<tr class="table-active"><th>COMMUNE</th></tr>';
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].cps.toString()+')</td></tr>';
-                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="COMMUNE"){
+                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="COMMUNE" && i){
                                             content += '<tr><td class="itemSeparator"></td></tr>';
                                         }
                                     }else if (data.resultats[val].type=="COMMUNE" && i) {
                                         i--;
                                         content += '<tr><td class="adresse_tab" xmax="'+data.resultats[val].xMax+'" xmin="'+data.resultats[val].xMin+'" ymax="'+data.resultats[val].yMax+'" ymin="'+data.resultats[val].yMin+'">'+data.resultats[val].nom+' ('+data.resultats[val].cps.toString()+')</td></tr>';
-                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="COMMUNE"){
+                                        if(data.resultats[parseInt(val)+1] && data.resultats[parseInt(val)+1].type=="COMMUNE" && i){
                                             content += '<tr><td class="itemSeparator"></td></tr>';
                                         }
                                     }
                                 }
                                 content += "</tbody></table>";
-                                console.log(content);
                                 $('#adresse_search_result').append(content);
                                 $('.adresse_tab').click(function() {
                                     if(this.getAttribute('x')){
