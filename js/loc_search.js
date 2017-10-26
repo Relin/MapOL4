@@ -85,6 +85,7 @@ $(function() {
                         if(this.getAttribute('x')){
                             var x = parseFloat(this.getAttribute('x'));
                             var y = parseFloat(this.getAttribute('y'));
+                            geo_draw_point(x,y);
                             LocationPicker.view.animate({
                                 center: [x,y],
                                 zoom:8
@@ -109,4 +110,24 @@ $(function() {
             });
         }
     });
+
+    function geo_draw_point(x,y){
+        LocationPicker.wkt_source.clear();
+
+        var geom = new ol.geom.Point([x,y]);
+        var feature = new ol.Feature({
+            geometry: geom
+        });
+
+        feature.setStyle(new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 5,
+                snapToPixel: false,
+                fill: new ol.style.Fill({color: 'yellow'}),
+                stroke: new ol.style.Stroke({color: 'red', width: 1})
+            })
+        }));
+
+        LocationPicker.wkt_source.addFeature(feature);
+    }
 });

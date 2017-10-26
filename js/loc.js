@@ -10,6 +10,7 @@ LocationPicker.belgiumProjection.setExtent([17736.0314, 23697.0977, 297289.9391,
 ol.proj.addProjection(belgiumProjection);
 */
 LocationPicker.url_spw_geolocalisation="http://geoservices.wallonie.be/geolocalisation/rest/searchAll/";
+LocationPicker.url_spw_geolocalisation_xy="http://geoservices.wallonie.be/geolocalisation/rest/getNearestPosition/";
 LocationPicker.map = {};
 LocationPicker.raster_osm = new ol.layer.Tile({
     source: new ol.source.OSM()
@@ -54,22 +55,20 @@ $(function() {
     LocationPicker.map.addInteraction(LocationPicker.draw);
     LocationPicker.view.animate({
         center: [168378.865657, 130247.210877],
-        zoom:1
+        zoom:2
     });
 
     function onClick(evt) {
+        $("#adresse_xy_result").empty();
         var myPoint = evt.feature.getGeometry();
         evt.feature.setStyle(LocationPicker.style);
-
-        $("#wkt").val(wkt);
-        wkt_source.clear();
-
-        $.get(LocationPicker.url_spw_geolocalisation + encodeURIComponent(search), function(data) {
-
+        LocationPicker.wkt_source.clear();
+        x = myPoint.getFlatCoordinates()[0];
+        y = myPoint.getFlatCoordinates()[1];
+        $.get(LocationPicker.url_spw_geolocalisation_xy + encodeURIComponent(x)+'/'+ encodeURIComponent(y), function(data) {
+            $("#adresse_xy_result").append(data.adresse);
         }).fail(function() {
-            $("#adresse_search_result").html("Erreur de connexion");
-        }).always(function() {
-            $("#adresse_search_result").show();
+            $("#adresse_xy_result").html("Erreur de connexion");
         });
     }
 
