@@ -99,6 +99,8 @@ $(function() {
                             });
                         }
                         $("#adresse_search").val(this.textContent);
+                        $("#adresse_search_result").hide();
+                        $("#adresse_search_result").empty();
                     });
                 }else{
                     $("#adresse_search_result").html(data.errorMsg);
