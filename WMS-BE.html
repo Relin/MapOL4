@@ -79,13 +79,37 @@
                 extent: [140704.96582616307, 160800.07700519735, 158923.2766912746, 178617.5646071611],
                 source: new ol.source.TileWMS({
                     url: 'http://www.mybrugis.irisnet.be/geoserver/wms',
-                    params: {
+                    params:{
                         'LAYERS': 'BCR:Aquarelle',
                         'TILED': true
                     },
                     serverType: 'geoserver',
                     projection: 'EPSG:31370',
-                    // Countries have transparency, so do not fade tiles:
+                    transition: 0
+                })
+            }),
+            new ol.layer.Tile({
+                extent: [42251.000000, 21146.000000, 295171.000000, 167706.000000],
+                source: new ol.source.TileArcGISRest({
+                    url: 'http://geoservices.wallonie.be/arcgis/rest/services/SOL_SOUS_SOL/CONSULT_SSOL/MapServer',
+                    params: {
+                        'LAYERS': '1',
+                        'TILED': true
+                    },
+                    projection: 'EPSG:31370',
+                    transition: 0
+                })
+            }),
+            new ol.layer.Tile({
+                extent: [42251.000000, 21146.000000, 295171.000000, 167706.000000],
+                source: new ol.source.TileWMS({
+                    url: 'http://geoservices.wallonie.be/arcgis/services/INSPIRE_WMS/PS/MapServer/WmsServer',
+                    params: {
+                        'LAYERS': 'PS.ProtectedSitesNationalMonumentsRecord.Surface',
+                        'TILED': true
+                    },
+                    serverType: 'mapserver',
+                    projection: 'EPSG:31370',
                     transition: 0
                 })
             })
@@ -95,7 +119,7 @@
             target: 'map',
             view: new ol.View({
                 center: [150000, 170000],
-                zoom: 4,
+                zoom: 2,
                 projection: 'EPSG:31370',
             })
         });
